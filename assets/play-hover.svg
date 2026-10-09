@@ -1,0 +1,18 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="66.1673" height="66.1673" viewBox="0 0 66.1673 66.1673" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 6" filter="url(#filter0_d_0_991)">
+<circle id="Ellipse 1" cx="33.0836" cy="30.5387" r="22.9041" fill="#F62202"/>
+<path id="Polygon 1" d="M41.5368 30.8646C42.0873 30.5555 42.0873 29.7829 41.5368 29.4738L29.1503 22.5201C28.5998 22.2111 27.9117 22.5974 27.9117 23.2155V37.1229C27.9117 37.741 28.5998 38.1273 29.1503 37.8183L41.5368 30.8646Z" fill="black"/>
+</g>
+<defs>
+<filter id="filter0_d_0_991" x="0" y="2.38419e-07" width="66.1673" height="66.1673" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2.54489"/>
+<feGaussianBlur stdDeviation="5.08979"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.45 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_991"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_991" result="shape"/>
+</filter>
+</defs>
+</svg>
