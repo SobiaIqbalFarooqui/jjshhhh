@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>jjSHHHH</title>
+<meta name="description" content="jjSHHHH — a corner of the internet where you can be you. Take the quiz, get your style archetype, join the waiting list." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* ---------- Brand fonts (brand_assets/Fonts) ---------- */
+  @font-face { font-family: 'Vesper Libre'; src: url('brand_assets/Fonts/Vesper_Libre/VesperLibre-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+  @font-face { font-family: 'Vesper Libre'; src: url('brand_assets/Fonts/Vesper_Libre/VesperLibre-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+  @font-face { font-family: 'Montserrat'; src: url('brand_assets/Fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('brand_assets/Fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf') format('truetype'); font-weight: 100 800; font-display: swap; }
+
+  /* ---------- Tokens (from the Figma file) ---------- */
+  :root {
+    --maroon: #0A0A0A;       /* page + card surface (v4: near-black) */
+    --maroon-raised: #2A2A2A;/* social card */
+    --red: #F62202;          /* spotify-only accents */
+    --gold: #FFD445;
+    --yellow: #FFE600;       /* wormhole, nav + waitlist CTA */
+    --line: #6E6E6E;         /* card + button outlines */
+    --frame: #BDBBB6;        /* profile frame, step badges */
+    --mood: #200B09;         /* mood board surface */
+    --cream: #F2F0EB;
+    --salmon: #FF9585;
+    --ink: #00190B;
+    --plum: #7D1D4A;
+    --muted: #B3B3B3;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* 1 Figma px inside a full-bleed 1512-wide canvas */
+    --u: calc(100cqw / 1512);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--maroon); font-family: 'Montserrat', sans-serif; color: var(--cream); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  img { display: block; }
+
+  .vesper { font-family: 'Vesper Libre', serif; }
+  .gilda  { font-family: 'Gilda Display', serif; }
+  .inter  { font-family: 'Inter', sans-serif; }
+
+  /* ---------- Scaled art-directed canvases (hero + pink story) ---------- */
+  .canvas { position: relative; container-type: inline-size; width: 100%; }
+  .canvas .abs { position: absolute; }
+
+  /* Hero */
+  .hero { aspect-ratio: 1512 / 1021; background: #747474; overflow: hidden; z-index: 1; }
+  .hero-bg   { left: 0; top: calc(-37 * var(--u)); width: calc(1853 * var(--u)); height: calc(1071 * var(--u)); object-fit: cover; object-position: bottom; }
+  .hero-logo { left: calc(38 * var(--u));   top: calc(15 * var(--u));  width: calc(1436 * var(--u)); }
+  .hero-girl { left: 0; top: calc(-60 * var(--u)); width: calc(1853 * var(--u)); height: calc(1071 * var(--u)); object-fit: cover; }
+  .hero-copy { left: 0; right: 0; margin: 0 auto; top: calc(861 * var(--u)); width: max(180px, calc(466 * var(--u))); font-size: max(11px, calc(36 * var(--u))); line-height: 1.1; text-align: center; }
+
+  /* Pink story */
+  .pink { position: relative; background-color: #ff3a6a; background-image: url('brand_assets/THe background.png'); background-size: cover; background-position: center; }
+  .pink > * { position: relative; z-index: 1; }
+  .story { aspect-ratio: 1512 / 1975; z-index: 2; }
+  .story-title { left: 0; right: 0; top: calc(43 * var(--u)); font-size: max(20px, calc(90 * var(--u))); line-height: 1; text-transform: uppercase; text-align: center; }
+  .star { left: calc(415 * var(--u)); top: calc(-92 * var(--u)); width: calc(799 * var(--u)); pointer-events: none; filter: grayscale(1) brightness(.8); }
+  .mix  { top: calc(535 * var(--u)); font-size: max(26px, calc(128 * var(--u))); line-height: 1; }
+  .step { display: flex; align-items: center; gap: calc(20 * var(--u)); font-size: max(12px, calc(40 * var(--u))); line-height: 1; }
+  .badge { position: relative; flex: none; width: max(22px, calc(60 * var(--u))); aspect-ratio: 1; display: grid; place-items: center; color: var(--cream); border: 1px solid var(--frame); border-radius: 999px; }
+  .badge img { display: none; }
+  .tag { font-weight: 700; font-size: max(8px, calc(21 * var(--u))); line-height: 1; white-space: nowrap; transform: translateY(-50%); }
+  .tag.c { transform: translate(-50%, -50%); }
+  .connectors { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+  .wormhole { left: calc(10 * var(--u)); top: calc(985 * var(--u)); width: calc(1492 * var(--u)); pointer-events: none; filter: hue-rotate(6deg) saturate(1.6) brightness(1.1); }
+
+  /* ---------- Profile (dark section, real responsive layout) ---------- */
+  .profile-wrap { background: var(--maroon); padding: 68px 0 56px; }
+  .profile {
+    max-width: 1222px; margin: 0 auto; position: relative; z-index: 3; background: var(--maroon); border: 1px solid var(--frame); border-radius: 30px; overflow: hidden;
+    padding: 44px 30px 91px 36px;
+  }
+  .card { background: var(--maroon); border: 2.5px solid var(--line); border-radius: 32px; position: relative; overflow: hidden; }
+  .eyebrow { font-family: 'Vesper Libre', serif; color: var(--cream); font-size: 25px; letter-spacing: 0; line-height: 0.98; }
+  .stack > * + * { margin-top: 33px; }
+  .step3 { font-size: 40px; gap: 17px; margin-left: 253px; color: var(--cream); }
+  .card-title { position: absolute; left: 33px; top: 36px; }
+  .head-btn { position: absolute; right: 29px; top: 30px; }
+
+  .btn { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 16px; line-height: 1; height: 48px; border-radius: 999px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+    transition: transform .35s var(--spring), opacity .2s ease; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .btn:focus-visible, .icon-btn:focus-visible, .avatar:focus-visible, .yellow-cta:focus-visible { outline: 2px solid var(--cream); outline-offset: 3px; }
+  .btn-solid { background: var(--cream); color: var(--maroon); }
+  .btn-solid:hover { background: #fff; }
+  .btn-ghost { border: 1px solid var(--line); color: var(--cream); background: #070707; }
+  .btn-ghost:hover { border-color: var(--frame); }
+  .btn-dim   { border: 1px solid var(--line); color: var(--cream); background: rgba(10,10,10,.25); }
+  .btn-dim:hover { border-color: var(--frame); }
+  .btn-text  { color: var(--maroon); background: transparent; }
+  .btn-text:hover { background: rgba(10,10,10,.06); }
+
+  .ph { overflow: hidden; border-radius: 32px; }
+  .ph img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--spring); }
+  .ph:hover img { transform: scale(1.04); }
+
+  /* Result card */
+  .result { border-radius: 180px; height: 359px; text-align: center; padding-top: 24px; }
+  .noir { font-family: 'JetBrains Mono', monospace; color: var(--cream); font-size: 159px; line-height: 1; margin-top: 18px; white-space: nowrap; }
+  .noir .l { font-weight: 300; letter-spacing: -0.1em; }
+  .noir .b { font-weight: 800; letter-spacing: -0.04em; }
+  .noir .sp { font-weight: 300; letter-spacing: -0.29em; }
+  .result p.desc { font-size: 19.09px; line-height: 1.48; letter-spacing: -0.04em; max-width: 893px; margin: 3px auto 0; }
+
+  /* Mood board */
+  .mood { height: 1205px; background: var(--mood); }
+  .mood .pills { position: absolute; top: 146px; right: 29px; display: flex; gap: 18.5px; }
+  .pill { width: 278px; height: 137px; border-radius: 48px; background: var(--cream); color: var(--maroon); font-weight: 600; font-size: 19.09px; line-height: 1.48; letter-spacing: -0.04em; padding: 22px 28px 0 30px; }
+  .mood .grid4 { position: absolute; top: 332px; left: 29px; right: 29px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+  .mood .col { display: flex; flex-direction: column; gap: 20px; }
+  .mood .veil { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(120,0,0,0) 50%, rgba(120,8,8,.5) 72%, rgba(80,4,4,.9) 90%, #3E0000 100%); pointer-events: none; }
+  .mood .actions { position: absolute; left: 29px; right: 29px; bottom: 21px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+  /* Fashion */
+  .fashion { height: 457px; }
+  .fashion .copy { position: absolute; left: 32px; top: 194px; width: 178px; font-weight: 500; font-size: 12.72px; line-height: 1.25; letter-spacing: -0.08em; }
+  .fashion .copy p + p { margin-top: 16px; }
+  .fashion .row { position: absolute; left: 245px; right: 29px; top: 112px; display: grid; grid-template-columns: 204fr 210fr 210fr 210fr; gap: 16px; }
+  .fashion .row .ph { height: 315px; }
+
+  /* Small category cards */
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
+  .mini { height: 457px; }
+  .mini .eyebrow { position: absolute; left: 33px; top: 34px; width: min(276px, calc(100% - 50px)); }
+  .mini .pics { position: absolute; left: 33px; right: 0; bottom: 0; top: 104px; display: grid; grid-template-columns: 245.5fr 79fr; gap: 11.5px; }
+  .mini .pics div { overflow: hidden; position: relative; }
+  img.crop { position: absolute; max-width: none; object-fit: fill !important; }
+  .mini .pics img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--spring); }
+  .mini .pics div:hover img { transform: scale(1.05); }
+
+  /* Music */
+  .music { height: 539px; }
+  .music .player { position: absolute; left: 125px; width: 902px; top: 86px; bottom: 0; overflow: hidden; font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(to bottom, #c5231e 0%, #7a1512 38%, #2a1110 58%, #121212 100%); }
+  .player .head { display: flex; gap: 21px; padding: 26px 26px 0; }
+  .player .cover { width: 188px; height: 188px; flex: none; box-shadow: 0 4px 60px rgba(0,0,0,.5); }
+  .player .cover img { width: 100%; height: 100%; object-fit: cover; }
+  .player .kicker { font-family: 'Montserrat'; font-weight: 700; font-size: 10px; margin-top: 39px; }
+  .player h3 { font-family: 'Montserrat'; font-weight: 700; font-size: 77px; letter-spacing: -0.045em; line-height: 1.1; margin: 4px 0 16px -3px; }
+  .player .by { font-size: 13px; }
+  .player .by span { color: #ffffffb3; }
+  .player .meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .player .ctrls { display: flex; align-items: center; gap: 12px; padding: 16px 26px 0 20px; }
+  .icon-btn { background: none; border: 0; padding: 0; cursor: pointer; display: grid; place-items: center; transition: transform .3s var(--spring), opacity .2s; }
+  .icon-btn:hover { transform: scale(1.08); }
+  .icon-btn:active { transform: scale(.94); }
+  .player .order { margin-left: auto; display: flex; align-items: center; gap: 18px; font-size: 12px; padding-right: 8px; }
+  .player .thead, .player .tr { display: grid; grid-template-columns: 40px 326px 258px 110px 1fr; align-items: center; margin: 0 26px; }
+  .player .thead { font-size: 11px; letter-spacing: .08em; color: var(--muted); padding: 20px 0 8px; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .player .tr { height: 46px; font-size: 12px; color: #fff; }
+  .player .tr:first-of-type { margin-top: 12px; }
+  .player .tr .n { padding-left: 16px; color: var(--muted); font-size: 13px; }
+  .player .tr .t { display: flex; align-items: center; gap: 12px; }
+  .player .tr .t img { width: 34px; height: 34px; object-fit: cover; }
+  .player .tr .t b { font-weight: 400; font-size: 13px; display: block; }
+  .player .tr .t small { font-size: 12px; color: #fff; opacity: .7; }
+  .player .tr.on .t b { color: var(--cream); }
+  .player .tint { filter: brightness(0) invert(.95); }
+  .play-btn { width: 46px; height: 46px; border-radius: 999px; background: var(--cream); margin: 0 6px 0 6px; }
+  .player .tr .al { color: #fff; opacity: .85; }
+  .player .tr .d { display: flex; justify-content: flex-end; align-items: center; gap: 18px; font-weight: 500; }
+
+  /* Share / match */
+  .share { display: grid; grid-template-columns: 371.5fr 763.5fr; gap: 21px; }
+  .social { background: var(--maroon-raised); border-radius: 4px; height: 236px; padding: 40px 45px 0; }
+  .social .eyebrow { width: 262px; }
+  .social .icons { display: flex; gap: 12.7px; margin-top: 55px; }
+  .round { width: 63.6px; height: 63.6px; border-radius: 999px; border: 1px solid var(--line); background: var(--maroon); display: grid; place-items: center; transition: transform .35s var(--spring), background-color .2s ease; }
+  .round:hover { transform: translateY(-3px); background: #1a1a1a; }
+  .round:active { transform: translateY(0) scale(.96); }
+  .round:focus-visible { outline: 2px solid var(--cream); outline-offset: 3px; }
+  .match { background: var(--cream); border-radius: 6px; height: 236px; position: relative; padding: 40px 34px 0; }
+  .match .eyebrow { color: var(--maroon); width: 252px; }
+  .avatars { position: absolute; top: 28px; left: 346px; display: flex; }
+  .avatar { width: 82.4px; height: 82.4px; border-radius: 999px; overflow: hidden; margin-right: -20px; transition: transform .35s var(--spring); position: relative; }
+  .avatar:hover { transform: translateY(-6px); z-index: 2; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .foot { background: #000; height: 67.4px; margin: 24.5px -30px 0 -36px; padding: 0 34px 0 49px; display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: 12.72px; }
+
+  /* ---------- Waitlist ---------- */
+  .waitlist { padding: calc(69 * var(--u)) 0 0; display: flex; justify-content: center; }
+  .yellow-cta { width: calc(1206 * var(--u)); height: max(44px, calc(96 * var(--u))); border-radius: 999px; background: var(--yellow); color: var(--maroon); font-family: 'Montserrat', sans-serif; font-weight: 600; display: flex; align-items: center; justify-content: center; font-size: max(15px, calc(32 * var(--u)));
+    transition: transform .4s var(--spring); text-decoration: none; }
+  .yellow-cta:hover { transform: translateY(-3px) scale(1.005); }
+  .yellow-cta:active { transform: translateY(0) scale(.99); }
+
+  /* ---------- Site footer (Figma: Navigation & Header → Footer) ---------- */
+  .site-foot-wrap { padding: 0; }
+  .site-foot { color: var(--maroon); padding: 107px 48px 40px; display: flex; flex-direction: column; }
+  .site-foot .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .site-foot h2 { font-family: 'Vesper Libre', serif; font-size: 40px; line-height: 1.15; text-transform: uppercase; letter-spacing: 0; margin: 0; }
+  .to-top { flex: none; width: 46px; height: 46px; margin-top: 2px; border-radius: 999px; background: #B33970; border: 1px solid rgba(255,255,255,.35); display: grid; place-items: center; color: #fff;
+    transition: transform .35s var(--spring), background-color .2s ease; }
+  .to-top:hover { transform: translateY(-3px); background: var(--plum); }
+  .to-top:active { transform: translateY(0) scale(.94); }
+  .site-foot .cols { display: grid; grid-template-columns: 52% 1fr auto; column-gap: 0; margin-top: 110px; font-size: 13.5px; line-height: 20px; text-transform: uppercase; }
+  .site-foot .cols h3 { font-weight: 700; font-size: 12px; margin: 0 0 22px; }
+  .site-foot .cols ul { list-style: none; margin: 0; padding: 0; }
+  .site-foot a.lnk { color: inherit; text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-size: 0 1px; background-repeat: no-repeat; background-position: 0 100%; transition: background-size .3s ease; }
+  .site-foot a.lnk:hover { background-size: 100% 1px; }
+  .site-foot a:focus-visible { outline: 2px solid var(--maroon); outline-offset: 2px; border-radius: 2px; }
+  .site-foot .big { width: 100%; padding-top: 44px; filter: brightness(0); opacity: .97; }
+  .site-foot .bar { margin-top: 91px; height: 35px; border: 1px solid var(--maroon); border-radius: 999px; display: flex; align-items: center; justify-content: space-between; padding: 0 19px; font-size: 12.5px; text-transform: uppercase; }
+  .site-foot .bar nav { font-weight: 600; }
+
+  /* ---------- Glass nav (appears on scroll) ---------- */
+  .gnav { position: fixed; z-index: 50; top: 16px; left: 30px; right: 30px; max-width: 1120px; margin: 0 auto; height: 54px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 6px 0 22px;
+    /* clear glass: no tint of its own, it borrows the colour behind it */
+    background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    -webkit-backdrop-filter: blur(22px) saturate(180%); backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.28);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(255,255,255,.08), 0 8px 32px -8px rgba(0,0,0,.25);
+    transform: translateY(-140%); opacity: 0; pointer-events: none;
+    transition: transform .6s var(--spring), opacity .3s ease; }
+  .gnav.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .gnav .brand { flex: none; display: block; border-radius: 8px; transition: transform .35s var(--spring), opacity .2s; }
+  .gnav .brand:hover { transform: scale(1.03); }
+  .gnav .brand:active { transform: scale(.97); }
+  .gnav .brand img { height: 22px; width: auto; }
+  .gnav form { flex: 0 1 440px; height: 42px; display: flex; align-items: center; gap: 8px; padding: 0 4px 0 18px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.1); transition: box-shadow .25s ease; }
+  .gnav form:focus-within { box-shadow: 0 0 0 3px rgba(255,212,69,.18); }
+  .gnav input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: #fff; font: 300 13px/1 'Montserrat', sans-serif; letter-spacing: -0.02em; text-overflow: ellipsis; }
+  .gnav input::placeholder { color: rgba(255,255,255,.85); }
+  .gnav input, .gnav .brand img { filter: drop-shadow(0 1px 2px rgba(0,0,0,.18)); }
+  .gnav button { flex: none; height: 34px; padding: 0 18px; border: 0; border-radius: 999px; background: var(--yellow); color: var(--maroon); font: 600 12.5px/1 'Montserrat', sans-serif; cursor: pointer;
+    transition: transform .35s var(--spring), background-color .2s ease; }
+  .gnav button:hover { transform: translateY(-1px) scale(1.02); background: #fff04d; }
+  .gnav button:active { transform: scale(.97); }
+  .gnav button:focus-visible, .gnav .brand:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .gnav .short { display: none; }
+  @media (max-width: 900px) {
+    .gnav { height: 52px; padding: 0 5px 0 18px; left: 16px; right: 16px; }
+    .gnav .brand img { height: 20px; }
+    .gnav form { flex-basis: 340px; height: 40px; padding: 0 4px 0 16px; }
+    .gnav input { font-size: 12px; }
+    .gnav button { height: 32px; padding: 0 16px; font-size: 12.5px; }
+    .gnav .long { display: none; } .gnav .short { display: inline; }
+  }
+  @media (max-width: 520px) {
+    .gnav { height: 48px; top: 10px; left: 10px; right: 10px; gap: 8px; padding: 0 4px 0 12px; }
+    .gnav .brand img { height: 16px; }
+    .gnav form { height: 38px; padding: 0 3px 0 12px; gap: 6px; }
+    .gnav input { font-size: 11.5px; }
+    .gnav button { height: 30px; padding: 0 12px; font-size: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .gnav { transition: opacity .2s ease; } }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1260px) {
+    .profile-wrap { padding-left: 16px; padding-right: 16px; }
+    .profile { padding: 32px 20px 40px; }
+    .foot { margin: 24px -20px 0; padding: 0 20px; }
+    .noir { font-size: clamp(44px, 12vw, 159px); }
+    .result { height: auto; padding: 24px 32px 36px; border-radius: 120px; }
+    .mood .pills { position: static; padding: 110px 29px 0; justify-content: flex-end; flex-wrap: wrap; }
+    .pill { width: auto; flex: 1 1 200px; max-width: 278px; height: auto; padding: 22px 26px; }
+    .mood { height: auto; padding-bottom: 150px; }
+    .mood .grid4 { position: relative; top: auto; left: auto; right: auto; margin: 28px 29px 0; max-height: 780px; overflow: hidden; }
+    .fashion { height: auto; padding: 100px 29px 29px; display: grid; grid-template-columns: 188px 1fr; gap: 24px; }
+    .fashion .copy, .fashion .row { position: static; width: auto; }
+    .fashion .row .ph { height: auto; aspect-ratio: 204 / 315; }
+    .music .player { left: 29px; right: 29px; width: auto; }
+    .player .thead, .player .tr { grid-template-columns: 40px 1.4fr 1fr 120px; }
+    .player .thead span:nth-child(4), .player .tr .dt { display: none; }
+    .avatars { position: static; margin: 20px 0 0; }
+    .match { height: auto; padding-bottom: 32px; }
+  }
+  @media (max-width: 900px) {
+    .site-foot { padding: 72px 36px 36px; }
+    .site-foot h2 { font-size: clamp(30px, 4.6vw, 40px); }
+    .site-foot .cols { grid-template-columns: 54% 1fr auto; margin-top: 76px; font-size: 15px; line-height: 23px; }
+    .site-foot .cols h3 { font-size: 13px; margin-bottom: 18px; }
+    .site-foot .big { padding-top: 64px; }
+    .site-foot .bar { margin-top: 70px; height: 40px; padding: 0 22px; font-size: 14px; }
+    .trio { grid-template-columns: 1fr; }
+    .share { grid-template-columns: 1fr; }
+    .mood .grid4 { grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 24px 16px 0; }
+    .mood .col:nth-child(n+3) { display: none; }
+    .mood .actions { left: 16px; right: 16px; }
+    .fashion { grid-template-columns: 1fr; padding: 90px 20px 24px; }
+    .fashion .row { grid-template-columns: repeat(2, 1fr); }
+    .player h3 { font-size: 44px; }
+    .player .cover { width: 120px; height: 120px; }
+    .player .kicker { margin-top: 10px; }
+    .music .player { left: 16px; right: 16px; }
+    .player .order span { display: none; }
+  }
+  @media (max-width: 1260px) {
+    .step3 { margin-left: 0; justify-content: center; }
+  }
+  @media (max-width: 700px) {
+    .card-title { position: static; }
+    .head-btn { position: static; width: 100%; margin-top: 16px; }
+    .mood .card-title { position: absolute; left: 20px !important; top: 28px !important; right: 20px; }
+    .fashion { padding-top: 28px; }
+    .fashion .card-title { grid-row: 1; }
+    .fashion .head-btn { order: 3; margin-top: 0; }
+    .music { height: auto; padding: 28px 16px 0; }
+    .music .head-btn { margin-bottom: 20px; }
+    .music .player { position: relative; left: auto !important; right: auto !important; top: auto; height: 480px; }
+  }
+  @media (max-width: 560px) {
+    .site-foot { padding: 48px 22px 34px; }
+    .site-foot .top { align-items: center; gap: 12px; }
+    .site-foot h2 { font-size: clamp(19px, 5.9vw, 28px); line-height: 1.05; }
+    .to-top { width: 52px; height: 52px; margin-top: 0; }
+    .site-foot .cols { grid-template-columns: 1fr; row-gap: 40px; margin-top: 50px; }
+    .site-foot .cols > div:nth-child(3) { justify-self: start; }
+    .site-foot .big { padding-top: 46px; }
+    .site-foot .bar { margin-top: 44px; height: auto; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 22px; border-radius: 30px; font-size: 14px; }
+    .eyebrow { font-size: 21px; }
+    .step3 { font-size: 26px; gap: 12px; justify-content: flex-start; }
+    .step3 .badge { width: 44px !important; }
+    .result { border-radius: 48px; padding: 20px 18px 28px; }
+    .result p.desc { font-size: 15px; }
+    .mood .pills { padding: 100px 16px 0; }
+    .pill { max-width: none; font-size: 16px; border-radius: 32px; }
+    .music { height: 600px; }
+    .music .eyebrow { width: 180px; }
+    .player .head { flex-direction: column; gap: 12px; padding: 18px 18px 0; }
+    .player .thead, .player .tr { grid-template-columns: 30px 1fr 110px; margin: 0 14px; }
+    .player .thead span:nth-child(3), .player .tr .al { display: none; }
+    .social, .match { padding-left: 24px; padding-right: 24px; }
+    .avatar { width: 58px; height: 58px; margin-right: -14px; }
+    .foot { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ GLASS NAV ============ -->
+<nav class="gnav" id="gnav" aria-label="Main">
+  <a href="#top" class="brand" aria-label="jjSHHHH home"><img src="brand_assets/JJSHHHH logo Header_white.png" alt="jjSHHHH"></a>
+  <form id="discover-form" autocomplete="off">
+    <label for="nav-name" class="sr-only">Your name</label>
+    <input id="nav-name" name="name" type="text" placeholder="Hey gorgeous! what’s your name?">
+    <button type="submit"><span class="long">Start your discovery</span><span class="short">Start</span></button>
+  </form>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header id="top" class="canvas hero" aria-label="jjSHHHH">
+  <img class="abs hero-bg" src="assets/hero-bg-1.png" alt="">
+  <img class="abs hero-logo" src="brand_assets/JJSHHHH logo Header_white.png" alt="jjSHHHH">
+  <img class="abs hero-girl" src="assets/hero-bg-2.png" alt="">
+  <p class="abs hero-copy vesper">This is a corner of internet where you can be you</p>
+</header>
+
+<!-- ============ PINK STORY ============ -->
+<section class="pink">
+  <div class="canvas story">
+    <h1 class="abs story-title vesper">Everbody has that strange logic that makes you, <b>you</b></h1>
+
+    <img class="abs star" src="brand_assets/Star.png" alt="">
+
+    <!-- ingredient map: lines + dots -->
+    <svg class="abs connectors" viewBox="0 0 1512 1975" preserveAspectRatio="none" aria-hidden="true">
+      <g stroke="rgba(255,255,255,.7)" stroke-width="1" vector-effect="non-scaling-stroke">
+        <line x1="757" y1="502" x2="366" y2="313" vector-effect="non-scaling-stroke" />
+        <line x1="757" y1="502" x2="1290" y2="432" vector-effect="non-scaling-stroke" />
+        <line x1="757" y1="502" x2="968" y2="730" vector-effect="non-scaling-stroke" />
+        <line x1="757" y1="502" x2="553" y2="869" vector-effect="non-scaling-stroke" />
+        <line x1="968" y1="730" x2="902" y2="1069" vector-effect="non-scaling-stroke" />
+        <line x1="1273" y1="880" x2="1289" y2="1212" vector-effect="non-scaling-stroke" />
+        <line x1="222" y1="998" x2="532" y2="1153" vector-effect="non-scaling-stroke" />
+        <line x1="553" y1="869" x2="532" y2="1153" vector-effect="non-scaling-stroke" />
+        <line x1="532" y1="1153" x2="741" y2="1417" vector-effect="non-scaling-stroke" />
+        <line x1="1289" y1="1212" x2="1076" y2="1377" vector-effect="non-scaling-stroke" />
+        <line x1="1076" y1="1377" x2="741" y2="1417" vector-effect="non-scaling-stroke" />
+      </g>
+      <g fill="#fff">
+        <circle cx="757" cy="502" r="11" />
+        <circle cx="366" cy="313" r="5" />
+        <circle cx="1290" cy="432" r="5" />
+        <circle cx="968" cy="730" r="5" />
+        <circle cx="553" cy="869" r="5" />
+        <circle cx="1273" cy="880" r="5" />
+        <circle cx="222" cy="998" r="5" />
+        <circle cx="902" cy="1069" r="5" />
+        <circle cx="532" cy="1153" r="5" />
+        <circle cx="1289" cy="1212" r="5" />
+        <circle cx="1076" cy="1377" r="5" />
+        <circle cx="741" cy="1417" r="5" />
+      </g>
+    </svg>
+
+    <span class="abs tag" style="right:calc(1165*var(--u));top:calc(313*var(--u))">Desire</span>
+    <span class="abs tag" style="left:calc(1309*var(--u));top:calc(432*var(--u))">Taste</span>
+    <span class="abs tag" style="left:calc(987*var(--u));top:calc(730*var(--u))">Memory</span>
+    <span class="abs tag c" style="left:calc(553*var(--u));top:calc(898*var(--u))">Instinct</span>
+    <span class="abs tag c" style="left:calc(1273*var(--u));top:calc(852*var(--u))">Memory</span>
+    <span class="abs tag" style="right:calc(1308*var(--u));top:calc(998*var(--u))">Memory</span>
+    <span class="abs tag c" style="left:calc(902*var(--u));top:calc(1099*var(--u))">Memory</span>
+    <span class="abs tag c" style="left:calc(532*var(--u));top:calc(1182*var(--u))">Memory</span>
+    <span class="abs tag" style="left:calc(1307*var(--u));top:calc(1212*var(--u))">Memory</span>
+    <span class="abs tag" style="left:calc(1094*var(--u));top:calc(1377*var(--u))">Memory</span>
+    <span class="abs tag" style="left:calc(759*var(--u));top:calc(1417*var(--u))">Memory</span>
+
+    <p class="abs mix vesper" style="left:calc(91*var(--u))">A MIX</p>
+    <p class="abs mix vesper" style="right:calc(78*var(--u))">OF ALL</p>
+
+    <div class="abs step vesper" style="left:calc(83*var(--u));top:calc(663*var(--u))">
+      <span class="badge"><img src="brand_assets/icons/badge-ring.svg" alt="">1</span>
+      <span>You make a quiz of all<br>the things you love</span>
+    </div>
+
+    <img class="abs wormhole" src="brand_assets/Whirlpool.png" alt="">
+
+    <div class="abs step vesper" style="left:calc(977*var(--u));top:calc(1736*var(--u))">
+      <span class="badge"><img src="brand_assets/icons/badge-ring.svg" alt="">2</span>
+      <span>We stir it in our pot</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROFILE ============ -->
+<main class="profile-wrap" id="profile">
+  <div class="profile">
+
+    <div class="step vesper step3">
+      <span class="badge" style="width:60px"><img src="brand_assets/icons/badge-ring.svg" alt="">3</span>
+      <span>and we bring it back to you</span>
+    </div>
+
+    <div class="stack" style="margin-top:26px">
+
+      <!-- Result -->
+      <section class="card result" aria-labelledby="result-title">
+        <p class="eyebrow">Your jjsHHHH</p>
+        <h2 id="result-title" class="noir"><span class="l">NOIR</span><span class="sp"> </span><span class="b">SYN<span style="letter-spacing:-0.07em">T</span>AX</span></h2>
+        <p class="desc">Cool, collected, and always put together. You live by the philosophy that less is more, favoring neutral palettes, structured silhouettes, and timeless essentials. Your style isn’t about being loud—it’s about being undeniably magnetic.</p>
+      </section>
+
+      <!-- Mood board -->
+      <section class="card mood">
+        <h3 class="eyebrow card-title" style="left:38px;top:55px">Mood Board/ The Essence of Individuality</h3>
+        <div class="pills">
+          <p class="pill">Mysterious, effortlessly stylish, and never trying too hard.</p>
+          <p class="pill">You speak in looks, gestures, and impeccable taste.</p>
+          <p class="pill">People are drawn to your calm confidence and sharp presence.</p>
+        </div>
+        <div class="grid4">
+          <div class="col">
+            <div class="ph" style="aspect-ratio:254.5/314.3"><img src="assets/mood-01.png" alt=""></div>
+            <div class="ph" style="aspect-ratio:254.5/381.7"><img src="assets/mood-c1.png" alt=""></div>
+            <div class="ph" style="aspect-ratio:254.5/381.7"><img src="assets/mood-09.png" alt=""></div>
+          </div>
+          <div class="col" style="gap:17px">
+            <div class="ph" style="aspect-ratio:254.5/451.6"><img src="assets/mood-02.png" alt=""></div>
+            <div class="ph" style="aspect-ratio:254.5/355"><img src="assets/mood-07.png" alt=""></div>
+          </div>
+          <div class="col" style="gap:17px">
+            <div class="ph" style="aspect-ratio:254.5/318.1"><img src="assets/mood-03.png" alt=""></div>
+            <div class="ph" style="aspect-ratio:254.5/419.2"><img src="assets/mood-c3.png" alt=""></div>
+            <div class="ph" style="aspect-ratio:254.5/381.7"><img src="assets/mood-10.png" alt=""></div>
+          </div>
+          <div class="col">
+            <div class="ph" style="aspect-ratio:254.5/381.7"><img src="assets/mood-05.png" alt=""></div>
+            <div class="ph" style="aspect-ratio:254.5/381.7"><img src="assets/mood-c4.png" alt=""></div>
+            <div class="ph" style="aspect-ratio:254.5/381.7"><img src="assets/mood-11.png" alt=""></div>
+          </div>
+        </div>
+        <div class="veil"></div>
+        <div class="actions">
+          <a href="#" class="btn btn-solid">Edit your Mood Board</a>
+          <a href="#" class="btn btn-dim">See More</a>
+        </div>
+      </section>
+
+      <!-- Fashion -->
+      <section class="card fashion">
+        <h3 class="eyebrow card-title">Fashion / Your encoded signature look</h3>
+        <a href="#" class="btn btn-ghost head-btn" style="right:56px">See More</a>
+        <div class="copy">
+          <p>Tailored coats, oversized blazers, and crisp shirts.</p>
+          <p>Monochrome looks—black, white, greys, and deep earthy tones.</p>
+          <p>Sleek leather, structured denim, and high-quality basics.</p>
+          <p>&nbsp;Accessories? Minimal but impactful—gold accents, designer sunglasses, and an elegant watch.</p>
+        </div>
+        <div class="row">
+          <div class="ph"><img src="assets/fashion-1.png" alt=""></div>
+          <div class="ph"><img src="assets/fashion-2.png" alt=""></div>
+          <div class="ph"><img src="assets/fashion-3.png" alt=""></div>
+          <div class="ph"><img src="assets/fashion-4.png" alt=""></div>
+        </div>
+      </section>
+
+      <!-- Texture / Interior / Environment -->
+      <div class="trio">
+        <section class="card mini">
+          <h3 class="eyebrow">Aesthetic &amp; Texture / The details that define your look</h3>
+          <div class="pics"><div><img src="assets/texture-1.png" alt=""></div><div><img src="assets/texture-2.png" alt=""></div></div>
+        </section>
+        <section class="card mini">
+          <h3 class="eyebrow">Interior / The space where your noir story unfolds</h3>
+          <div class="pics"><div><img src="assets/interior-1.png" alt=""></div><div><img src="assets/interior-2.png" alt="" class="crop" style="width:293.96%;height:100%;left:-185.98%;top:0%"></div></div>
+        </section>
+        <section class="card mini">
+          <h3 class="eyebrow" style="width:min(314px, calc(100% - 50px))">Environment / How the world around you influences your vibe</h3>
+          <div class="pics"><div><img src="assets/env-1.png" alt=""></div><div><img src="assets/env-2.png" alt="" class="crop" style="width:660.48%;height:100%;left:-363.68%;top:0%"></div></div>
+        </section>
+      </div>
+
+      <!-- Music -->
+      <section class="card music">
+        <h3 class="eyebrow card-title">Music / The soundtrack to your mystery</h3>
+        <a href="#" class="btn btn-ghost head-btn" style="top:23px">Listen on Spotify</a>
+        <div class="player">
+          <div class="head">
+            <div class="cover"><img src="assets/playlist-cover.png" alt="Sonic Shadows playlist cover"></div>
+            <div>
+              <p class="kicker">PUBLIC PLAYLIST</p>
+              <h3>Sonic Shadows</h3>
+              <p class="by">Julia Wolf, ayokay, Khalid <span>and more</span></p>
+              <p class="meta">Made for Noir Syntax &nbsp;•&nbsp; <span style="color:#fff;opacity:.8">34 songs, 2hr 01 min</span></p>
+            </div>
+          </div>
+          <div class="ctrls">
+            <button class="icon-btn play-btn" aria-label="Play"><svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true"><path d="M15 8.13a1 1 0 0 1 0 1.74L2.5 17.1A1 1 0 0 1 1 16.23V1.77A1 1 0 0 1 2.5.9Z" fill="#0A0A0A"/></svg></button>
+            <button class="icon-btn" aria-label="Like"><img src="assets/heart-xs.svg" width="33" height="33" alt=""></button>
+            <button class="icon-btn" aria-label="Download"><img src="assets/download-xs.svg" width="33" height="33" alt=""></button>
+            <button class="icon-btn" aria-label="More options"><img src="assets/options-xs.svg" width="28" height="28" alt=""></button>
+            <div class="order">
+              <button class="icon-btn" aria-label="Search in playlist"><img src="assets/search-s.svg" width="15" height="15" alt=""></button>
+              <span>Custom order</span>
+              <img src="assets/caret.svg" width="10" height="10" alt="">
+            </div>
+          </div>
+          <div class="thead"><span style="padding-left:16px">#</span><span>TITLE</span><span>ALBUM</span><span>DATE ADDED</span><span style="justify-self:end;padding-right:40px"><img src="assets/clock-xs.svg" width="18" height="18" alt="Duration"></span></div>
+          <div class="tr on">
+            <span class="n"><img class="tint" src="assets/eq.svg" width="18" height="18" alt="Now playing"></span>
+            <span class="t"><img src="assets/track-1-thumb.png" alt=""><span><b>Play It Safe</b><small>Julia Wolf</small></span></span>
+            <span class="al">Play It Safe</span><span class="dt"></span>
+            <span class="d"><img class="tint" src="assets/heart-fill-xs.svg" width="18" height="18" alt="Liked"><span style="padding-right:40px">2 : 12</span></span>
+          </div>
+          <div class="tr">
+            <span class="n">2</span>
+            <span class="t"><img src="assets/track-2.png" alt=""><span><b>Ocean Front Apt.</b><small>ayokay</small></span></span>
+            <span class="al">In the Shape of a Dream</span><span class="dt"></span>
+            <span class="d"><span style="padding-right:40px">2 : 12</span></span>
+          </div>
+          <div class="tr">
+            <span class="n">3</span>
+            <span class="t"><img src="assets/track-3.png" alt=""><span><b>Free Spirit</b><small>Khalid</small></span></span>
+            <span class="al">Free Spirit</span><span class="dt"></span>
+            <span class="d"><span style="padding-right:40px">3 : 02</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Movies / Hobbies / Food -->
+      <div class="trio">
+        <section class="card mini">
+          <h3 class="eyebrow">Movies &amp; Shows /<br>Films that shape your world</h3>
+          <div class="pics"><div><img src="assets/movie-1.png" alt=""></div><div><img src="assets/movie-2.png" alt="" class="crop" style="width:284.79%;height:100%;left:-0.05%;top:0%"></div></div>
+        </section>
+        <section class="card mini">
+          <h3 class="eyebrow">Hobbies &amp; Sports/ Your side missions &amp; secret skills</h3>
+          <div class="pics"><div><img src="assets/hobby-1.png" alt=""></div><div><img src="assets/hobby-2.png" alt=""></div></div>
+        </section>
+        <section class="card mini">
+          <h3 class="eyebrow">Food &amp; Drinks/ What powers your system</h3>
+          <div class="pics"><div><img src="assets/food-1.png" alt="" class="crop" style="width:211.26%;height:223.83%;left:-74.99%;top:-78.82%"></div><div><img src="assets/food-2.png" alt="" class="crop" style="width:367.74%;height:125.27%;left:-151.83%;top:-0.4%"></div></div>
+        </section>
+      </div>
+
+      <!-- Share + Match -->
+      <div class="share">
+        <section class="social">
+          <h3 class="eyebrow">It's time to let the world see your jjsHHHH</h3>
+          <div class="icons">
+            <a href="#" class="round" aria-label="Instagram"><img src="brand_assets/icons/social-instagram.svg" width="25" height="29" alt=""></a>
+            <a href="#" class="round" aria-label="Facebook"><img src="brand_assets/icons/social-facebook.svg" width="19" height="30" alt=""></a>
+            <a href="#" class="round" aria-label="X"><img src="brand_assets/icons/social-x.svg" width="21" height="22" alt=""></a>
+          </div>
+        </section>
+        <section class="match">
+          <h3 class="eyebrow">Find Your jjsHHHH Soulmates… or Your Style Opposites</h3>
+          <a href="#" class="btn btn-text" style="margin-top:38px;width:230px">Explore</a>
+          <div class="avatars">
+            <a href="#" class="avatar" aria-label="Profile 1"><img src="assets/avatar-1.png" alt=""></a>
+            <a href="#" class="avatar" aria-label="Profile 2"><img src="assets/avatar-2.png" alt="" class="crop" style="width:234.4%;height:293%;left:-66.7%;top:-32%"></a>
+            <a href="#" class="avatar" aria-label="Profile 3"><img src="assets/avatar-3.png" alt=""></a>
+            <a href="#" class="avatar" aria-label="Profile 4"><img src="assets/avatar-4.png" alt="" class="crop" style="width:289%;height:433.45%;left:-23.95%;top:-123.58%"></a>
+            <a href="#" class="avatar" aria-label="Profile 5"><img src="assets/avatar-5.png" alt="" class="crop" style="width:128%;height:160%;left:-11.92%;top:-35.2%"></a>
+            <a href="#" class="avatar" aria-label="Profile 6"><img src="assets/avatar-6.png" alt=""></a>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- ============ WAITLIST + FOOTER (one pink block) ============ -->
+<div class="pink" id="waitlist">
+  <div class="canvas waitlist">
+    <a href="#waitlist" class="yellow-cta">Join our waiting list</a>
+  </div>
+
+<div class="site-foot-wrap">
+  <footer class="site-foot">
+    <div class="top">
+      <h2>A corner of internet<br>where you can be you</h2>
+      <a href="#top" class="to-top" aria-label="Back to top">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 16V4M4.5 9.5 10 4l5.5 5.5"/></svg>
+      </a>
+    </div>
+
+    <div class="cols">
+      <div>
+        <h3>jjSHHHH</h3>
+        <p style="margin:0">A taste-discovery platform<br>for naming your aesthetic</p>
+      </div>
+      <div>
+        <h3>Navigation</h3>
+        <ul>
+          <li><a class="lnk" href="#top">Home</a></li>
+          <li><a class="lnk" href="#">Discover</a></li>
+          <li><a class="lnk" href="#profile">Profile</a></li>
+          <li><a class="lnk" href="#">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Follow</h3>
+        <ul>
+          <li><a class="lnk" href="#">Instagram</a></li>
+          <li><a class="lnk" href="#">Facebook</a></li>
+          <li><a class="lnk" href="#">X</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <img class="big" src="brand_assets/JJSHHHH logo Header_Deep Red.png" alt="jjSHHHH">
+
+    <div class="bar">
+      <span>©2025 jjSHHHH</span>
+      <nav aria-label="Legal"><a class="lnk" href="#">Legal</a> / <a class="lnk" href="#">Privacy</a> / <a class="lnk" href="#">Cookies</a></nav>
+    </div>
+  </footer>
+</div>
+</div>
+
+<script>
+  // Glass nav slides in once the page starts scrolling
+  (() => {
+    const nav = document.getElementById('gnav');
+    const input = document.getElementById('nav-name');
+    let ticking = false;
+    const update = () => {
+      const show = window.scrollY > 40 || nav.contains(document.activeElement);
+      nav.classList.toggle('show', show);
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    nav.addEventListener('focusout', () => requestAnimationFrame(update));
+    update();
+    document.getElementById('discover-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!input.value.trim()) { input.focus(); return; }
+      // TODO: hook up to the discovery quiz once it exists
+    });
+  })();
+</script>
+</body>
+</html>
